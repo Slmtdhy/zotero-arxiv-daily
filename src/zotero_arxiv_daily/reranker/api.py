@@ -9,6 +9,7 @@ class ApiReranker(BaseReranker):
             input=s1 + s2,
             model=self.config.reranker.api.model
         )
+        print("responses":response)
         embeddings = [r.embedding for r in response.data]
         s1_embeddings = np.array(embeddings[:len(s1)]) # [n_s1, d]
         s2_embeddings = np.array(embeddings[len(s1):]) # [n_s2, d]
