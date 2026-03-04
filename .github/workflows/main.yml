@@ -35,7 +35,7 @@ jobs:
         #   uv run src/zotero_arxiv_daily/main.py
         with:
           max_attempts: 2          # 失败最多重试 3 次
-          timeout_minutes: 30      # 单次最多跑 30 分钟，防止卡住
+          timeout_minutes: 120      # 单次最多跑 30 分钟，防止卡住
           retry_on: error
           command: |
             printf "%b\n" "$CUSTOM_CONFIG" > config/custom.yaml
