@@ -18,6 +18,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Run script
+        uses: nick-fields/retry@v3
         env:
           ZOTERO_ID: ${{ secrets.ZOTERO_ID }}
           ZOTERO_KEY: ${{ secrets.ZOTERO_KEY }}
@@ -27,8 +28,17 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
           CUSTOM_CONFIG: ${{ vars.CUSTOM_CONFIG }}
-        run: |
-          printf "%b\n" "$CUSTOM_CONFIG" > config/custom.yaml
-          echo "Use custom config: "
-          cat config/custom.yaml
-          uv run src/zotero_arxiv_daily/main.py
+        # run: |
+        #   printf "%b\n" "$CUSTOM_CONFIG" > config/custom.yaml
+        #   echo "Use custom config: "
+        #   cat config/custom.yaml
+        #   uv run src/zotero_arxiv_daily/main.py
+        with:
+          max_attempts: 2          # 失败最多重试 3 次
+          timeout_minutes: 30      # 单次最多跑 30 分钟，防止卡住
+          retry_on: error
+          command: |
+            printf "%b\n" "$CUSTOM_CONFIG" > config/custom.yaml
+            echo "Use custom config: "
+            cat config/custom.yaml
+            uv run src/zotero_arxiv_daily/main.py
